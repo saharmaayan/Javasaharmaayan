@@ -10,6 +10,12 @@ public class Stock {
 	private float ask;
 	private float bid;
 	private Date date;
+	private int recommendation;
+	private int stockQuantity;
+	private static final int BUY=0;
+	private static final int SELL=1;
+	private static final int REMOVE=2;
+	private static final int HOLD=3;
 	
 	SimpleDateFormat sdf= new SimpleDateFormat("MM/dd/yyyy");
 	
