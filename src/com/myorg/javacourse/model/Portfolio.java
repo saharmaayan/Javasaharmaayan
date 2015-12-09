@@ -47,7 +47,7 @@ private int index=0;
 		
 	}
 	/**
-	 * this method add new stock to the portpolio
+	 * this method add new stock to the portfolio
 	 * the method check if there is space in the portfolio to add another stock,
 	 * then it adds the stock to the end of the portfollio and increase the portfolio size by 1
 	 * @param p

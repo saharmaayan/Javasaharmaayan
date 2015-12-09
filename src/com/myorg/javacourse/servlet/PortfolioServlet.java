@@ -13,7 +13,7 @@ import com.myorg.javacourse.service.PortfolioManager;
 
 @SuppressWarnings("serial")
 /**
- * this class provide information about all the protfolio that created
+ * this class provide information about all the portfolio that created
  * @param p
  */
 public class PortfolioServlet extends HttpServlet {

@@ -15,7 +15,7 @@ public class PortfolioManager {
 	@SuppressWarnings("deprecation")
 	public Portfolio  getPortfolio()
 	/**
-	 * this method generate new portfolio and adding some stocks and thier values and then retun the portfolio.
+	 * this method generate new portfolio and adding some stocks and their values and then return the portfolio.
 	 * @param p
 	 */
 	{
