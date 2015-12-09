@@ -12,7 +12,16 @@ import com.myorg.javacourse.model.Portfolio;
 import com.myorg.javacourse.service.PortfolioManager;
 
 @SuppressWarnings("serial")
+/**
+ * this class provide information about all the protfolio that created
+ * @param p
+ */
 public class PortfolioServlet extends HttpServlet {
+	/**
+	 * this method creats new portfolios and manage all commands of them
+	 * at last, the method is present all the portfolio detailes 
+	 * @param p
+	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		resp.setContentType("text/html");
 	

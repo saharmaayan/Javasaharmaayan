@@ -2,6 +2,11 @@ package com.myorg.javacourse.service;
 
 import java.util.Date;
 
+/**
+ * this class generate new potfolio and adding some stocks and their values by using method getPortfolio
+ * @param p
+ */
+
 import com.myorg.javacourse.model.Portfolio;
 import com.myorg.javacourse.model.Stock;
 
@@ -9,6 +14,10 @@ public class PortfolioManager {
 
 	@SuppressWarnings("deprecation")
 	public Portfolio  getPortfolio()
+	/**
+	 * this method generate new portfolio and adding some stocks and thier values and then retun the portfolio.
+	 * @param p
+	 */
 	{
 		Portfolio portfolio = new Portfolio("Portfolio #1");
 
