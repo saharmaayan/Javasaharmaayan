@@ -1,8 +1,5 @@
 package com.myorg.javacourse.model;
 
-import com.myorg.javacourse.Stock;
-
-
 public class Portfolio {
 private String title; 
 private final static int MAX_PORTFOLIO_SIZE=5;

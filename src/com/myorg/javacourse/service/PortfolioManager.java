@@ -2,15 +2,15 @@ package com.myorg.javacourse.service;
 
 import java.util.Date;
 
-import com.myorg.javacourse.Stock;
 import com.myorg.javacourse.model.Portfolio;
+import com.myorg.javacourse.model.Stock;
 
 public class PortfolioManager {
 
 	@SuppressWarnings("deprecation")
 	public Portfolio  getPortfolio()
 	{
-		Portfolio portfolio = new Portfolio("Maayan and Sahar portfolio");
+		Portfolio portfolio = new Portfolio("Portfolio #1");
 
 		Stock stock1= new Stock("PIH",13.1f,12.4f,new Date("11/15/2014"));
 		
@@ -23,9 +23,7 @@ public class PortfolioManager {
 		stock3.setSymbol("CAAS");
 		stock3.setAsk((float)(32.2));
 		stock3.setBid((float)(31.5));
-		
-		
-		
+
 		portfolio.addStock(stock1);
 		portfolio.addStock(stock2);
 		portfolio.addStock(stock3);

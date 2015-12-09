@@ -1,4 +1,4 @@
-package com.myorg.javacourse;
+package com.myorg.javacourse.model;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
