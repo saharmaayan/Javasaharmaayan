@@ -11,12 +11,10 @@ public class Stock {
 	private float bid;
 	private Date date;
 	@SuppressWarnings("unused")
-	private int recommendation;
 	private int stockQuantity;
-	private static final int BUY=0;
-	private static final int SELL=1;
-	private static final int REMOVE=2;
-	private static final int HOLD=3;
+	@SuppressWarnings("unused")
+	private Portfolio.ALGO_RECOMMENDATION recommendation;
+	
 	
 	public Stock(String symbol, float ask, float bid, Date date)
 	{
@@ -56,6 +54,13 @@ public class Stock {
 	}
 	public void setDate(Date date) {
 		this.date = date;
+	}
+	public void setStockQuantity(int stockQuantity)
+	{
+		this.stockQuantity=stockQuantity;
+	}
+	public int getStockQuantity(){
+		return stockQuantity;
 	}
 
 	public String getHtmlDescription() {
