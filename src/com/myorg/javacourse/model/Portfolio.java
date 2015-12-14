@@ -10,7 +10,6 @@ private int index=0;
 private float balance;
 public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 
-	
 	public Portfolio(String title){
 		stocks= new Stock [MAX_PORTFOLIO_SIZE];
 		this.title=title;
@@ -32,15 +31,12 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 		
 		}
 	}
-	
 	/**
 	 * this method change the bid's value of the last stock in the portfolio.
 	 * the method checks if the portfolio is not empty, then the method change the bid's value of the last stock
 	 * if the portfolio is empty, the method does nothing
 	 * @param p
 	 */
-	
-	
 	
 	public void updateBalance(float amount)
 	{
@@ -52,7 +48,6 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 		{
 			balance+=amount;
 		}
-		
 	}
 	
 	public float getBalance()
@@ -72,9 +67,6 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 		}
 		return amount;
 	}
-	
-	
-	
 
 	/**
 	 * this method add new stock to the portfolio
@@ -191,7 +183,6 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 						return true;
 					}
 				}
-				
 				
 			}
 			}
