@@ -28,7 +28,6 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 		for(int i=0 ; i < p.index ; i++)
 		{
 			 this.addStock(new Stock(p.getStock()[i]));
-		
 		}
 	}
 	/**
@@ -90,9 +89,7 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 			{
 				s.setStockQuantity(0);
 				stocks[index++]=s;
-				
 			}
-			
 		}
     }
 	public boolean removeStock(Stock symbol)
@@ -110,8 +107,6 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 				}
 				index--;
 			}
-			
-			
 		}
 		return flag;
 	}
@@ -145,9 +140,7 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 						updateBalance(quantity*(getStock()[i].getBid()));
 						getStock()[i].setStockQuantity((getStock()[i].getStockQuantity())-quantity);
 						flag=true;
-						
 					}
-					
 				}
 			}
 		
@@ -165,7 +158,6 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 					while(getBalance()>0 && stock.getAsk()< getBalance() )
 					{
 						updateBalance(-stock.getAsk());
-						
 					}
 					getStock()[i].setStockQuantity(quantity+getStock()[i].getStockQuantity());
 					return true;
