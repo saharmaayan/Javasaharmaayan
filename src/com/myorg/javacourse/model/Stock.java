@@ -10,7 +10,6 @@ public class Stock {
 	private float ask;
 	private float bid;
 	private Date date;
-	@SuppressWarnings("unused")
 	private int stockQuantity;
 	@SuppressWarnings("unused")
 	private Portfolio.ALGO_RECOMMENDATION recommendation;

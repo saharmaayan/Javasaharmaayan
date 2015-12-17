@@ -2,6 +2,7 @@ package com.myorg.javacourse.model;
 
 import com.myorg.javacourse.service.PortfolioManager;
 
+@SuppressWarnings("unused")
 public class Portfolio {
 private String title; 
 private final static int MAX_PORTFOLIO_SIZE=5;
@@ -60,11 +61,14 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 	}
 	public float getStockValue(){
 		float amount = 0; 
-		for(int i=0; i<index; i++)
+		for(int i=0; i<getIndex(); i++)
 		{
 			amount+=getStock()[i].getBid()*getStock()[i].getStockQuantity();
 		}
 		return amount;
+	}
+	public int getIndex(){
+		return index;
 	}
 
 	/**
@@ -75,22 +79,20 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 	 */
 	
 	public void addStock(Stock s){
-		for(int i=0; i < index; i++)
+		if (this.index < MAX_PORTFOLIO_SIZE)
 		{
-			if(s.getSymbol().equals(stocks[i].getSymbol())&&index!=0)
+			for (int i = 0 ; i < this.index; i++)
 			{
-				return;
+				if(s.getSymbol() == this.stocks[i].getSymbol()){
+					return;
+				}
 			}
-			else if(index>4)
-			{
-				System.out.println("Can’t add new stock, portfolio can have only" + MAX_PORTFOLIO_SIZE+ "stocks");
-			}
-			else
-			{
-				s.setStockQuantity(0);
-				stocks[index++]=s;
-			}
+			this.stocks[index] = s;
+			this.stocks[index].setStockQuantity(0);
+			this.index++;
 		}
+		else
+			System.out.println("Can’t add new stock, portfolio can have only" + MAX_PORTFOLIO_SIZE + "stocks");
     }
 	public boolean removeStock(Stock symbol)
 	{
@@ -112,86 +114,87 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 	}
 	public boolean sellStock(String symbol,int quantity)
 	{
-		boolean flag=false;
 		
-			for(int i=0; i < index; i++)
+		for(int i=0; i < index; i++)
 			{
 				if(symbol.equals(getStock()[i].getSymbol()))
 				{
 					if(quantity==-1)
 					{
-						updateBalance(quantity*(getStock()[i].getBid()));
+						updateBalance(stocks[i].getStockQuantity() * stocks[i].getBid());
 						getStock()[i].setStockQuantity(0);
-						flag=true;
+						return true;
 					}
-					else if(quantity<0 &&  quantity!= -1)
+					else if(quantity<=0 &&  quantity!= -1)
 					{
-						flag=false;
 						System.out.println("Sorry, but you cant sell");
+						return false;
 					}
-					else if((getStock()[i].getStockQuantity())-quantity<0)
+					else if(getStock()[i].getStockQuantity() >= quantity)
 					{
-						flag=false;
-						System.out.println("Sorrt,Not enough stocks to sell.");
+						updateBalance(getStock()[i].getStockQuantity() * getStock()[i].getBid());
+						getStock()[i].setStockQuantity(getStock()[i].getStockQuantity() - quantity);
+						return true;
 
 					}
-					else
+					else if(getStock()[i].getStockQuantity() < quantity)
 					{
-						updateBalance(quantity*(getStock()[i].getBid()));
-						getStock()[i].setStockQuantity((getStock()[i].getStockQuantity())-quantity);
-						flag=true;
+						System.out.println("Not enough stocks to sell");
+						return false;
 					}
 				}
 			}
-		
-			return flag;
+		System.out.println("error!!!");
+		return false;
+			
 	}
 	public boolean buyStock(Stock stock,int quantity)
 	{
-		
-		for(int i=0; i<index; i++)
+		int max=0;
+		if(quantity<=0 && quantity!= -1)
 		{
-			if(getStock()[i].getSymbol().equals(stock.getSymbol()))
-			{
-				if(quantity==-1)
-				{
-					while(getBalance()>0 && stock.getAsk()< getBalance() )
-					{
-						updateBalance(-stock.getAsk());
-					}
-					getStock()[i].setStockQuantity(quantity+getStock()[i].getStockQuantity());
-					return true;
-				}
-				else
-				{
-					if(quantity*stock.getAsk()>getBalance())
-					{
-						return false;
-					}
-					else
-					{
-						updateBalance(-quantity*stock.getAsk());
-						getStock()[i].setStockQuantity(quantity+getStock()[i].getStockQuantity());
-						return true;
-					}
-				}
-				
-			}
-			}
-		if(quantity*stock.getAsk()>getBalance())
-		{
-			System.out.println("Not enough balance to complete purchase.");
+			System.out.println("sorry the quantity is worng!");
 			return false;
 		}
-		else
-		{
+		else{
+			max=(int)(balance/stock.getAsk());
+			if(quantity>max){
+				System.out.println("the balance is not enough");
+				return false;
+			}
+		
+			for(int i=0; i<index; i++)
+			{
+					if(getStock()[i].getSymbol().equals(stock.getSymbol()))
+					{
+						if(quantity== -1)
+						{
+							getStock()[i].setStockQuantity(getStock()[i].getStockQuantity()+max);
+							updateBalance(-(max*stock.getAsk()));
+							return true;
+						}
+						else
+						{
+							getStock()[i].setStockQuantity(getStock()[i].getStockQuantity()+quantity);
+							updateBalance(-(quantity*stock.getAsk()));
+							return true;
+						}
+					}
+			}
 			addStock(stock);
-			updateBalance(-quantity*stock.getAsk());
-			stock.setStockQuantity(quantity);
-			return true;
+			if(quantity==-1){
+				getStock()[index-1].setStockQuantity(max);
+				updateBalance(-(max*stock.getAsk()));
+				return true;
+			}
+			else{
+				getStock()[index-1].setStockQuantity(quantity);
+				updateBalance(-(quantity*stock.getAsk()));
+				return true;
+			}
 		}
 	}
-		
+	
 	
 	public Stock[] getStock(){
 		return stocks;
@@ -205,12 +208,14 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 	}
 	
 	public String getHtmlString(){
-		String ret= "<h1>" +getTitle()+ "</h1><br>";
-		
-		for (int i =0; i < index; i++) {
-				ret += stocks[i].getHtmlDescription();
-			}
-		
-		return ret;
+		String portfolioTitle = "<h1>"  + getTitle() + "</h1>";
+		String details = "";
+		String portfolioValue;
+		for(int i = 0; i < index; i++)
+		{
+			details = details +"<br>"+getStock()[i].getHtmlDescription();
+		}
+		portfolioValue = getTotalValue() + "$ Total Stocks value:" + this.getStockValue() + "$ Balance:" + getBalance() + "$";
+		return (portfolioTitle + "<br><br>" + "Total Portfolio Value:" + portfolioValue + "<br><br>" + details);
 	}
 }

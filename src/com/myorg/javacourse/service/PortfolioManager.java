@@ -19,24 +19,30 @@ public class PortfolioManager {
 	 * @param p
 	 */
 	{
-		Portfolio portfolio = new Portfolio("Portfolio #1");
+		Portfolio myPortfolio = new Portfolio("Exercise 7 portfolio");
+		myPortfolio.updateBalance(10000f);
+		
 
-		Stock stock1= new Stock("PIH",13.1f,12.4f,new Date("11/15/2014"));
+		Stock stock1= new Stock("PIH",10.0f,8.5f,new Date("12/15/2014"));
 		
 		Stock stock2= new Stock(stock1);
 		stock2.setSymbol("AAL");
-		stock2.setAsk((float)(5.78));
-		stock2.setBid((float)(5.5));		
+		stock2.setAsk((float)(30.0));
+		stock2.setBid((float)(25.5));		
 		
 		Stock stock3= new Stock(stock1);
 		stock3.setSymbol("CAAS");
-		stock3.setAsk((float)(32.2));
-		stock3.setBid((float)(31.5));
-
-		portfolio.addStock(stock1);
-		portfolio.addStock(stock2);
-		portfolio.addStock(stock3);
+		stock3.setAsk((float)(20.0));
+		stock3.setBid((float)(15.5));
 		
-		return portfolio;
+		myPortfolio.buyStock(stock1, 20);
+		myPortfolio.buyStock(stock2, 30);
+		myPortfolio.buyStock(stock3, 40);
+		
+		myPortfolio.sellStock("AAL",-1);
+		myPortfolio.removeStock(stock3);
+
+		
+		return myPortfolio;
 	}
 }
