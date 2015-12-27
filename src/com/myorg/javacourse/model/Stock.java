@@ -1,17 +1,21 @@
 package com.myorg.javacourse.model;
+import com.myorg.javacourse.model.Portfolio;
+import com.myorg.javacourse.model.Portfolio.ALGO_RECOMMENDATION;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
-public class Stock {
+import org.algo.model.StockInterface;
+/**
+ * This class represent all values of a specipic stock.
+ */
+public class Stock implements StockInterface {
 	
 	private String symbol;
 	private float ask;
 	private float bid;
 	private Date date;
 	private int stockQuantity;
-	@SuppressWarnings("unused")
 	private Portfolio.ALGO_RECOMMENDATION recommendation;
 	
 	
@@ -26,6 +30,10 @@ public class Stock {
 	public Stock(Stock s)
 	{
 		this(s.getSymbol(),s.getAsk(),s.getBid(),s.getDate());
+		this.recommendation= s.getRecommendation();
+		this.stockQuantity= s.getStockQuantity();
+	}
+	public Stock() {
 	}
 	
 	SimpleDateFormat sdf= new SimpleDateFormat("MM/dd/yyyy");
@@ -66,6 +74,14 @@ public class Stock {
 		String stockHtmlDetailsString =  "<b> Stock symbol: </b> " + getSymbol()+ "  <b>Ask:</b> " + getAsk() + "<b>Bid:</b>" +getBid() + " <b>date</b>:  " + sdf.format(getDate())+ "<br>";
 		return stockHtmlDetailsString;
 
+	}
+	public void setRecommendation(ALGO_RECOMMENDATION recommendation) {
+		this.recommendation = recommendation;
+		
+	}
+	public ALGO_RECOMMENDATION getRecommendation() {
+		return recommendation ;
+		
 	}
 	
 	

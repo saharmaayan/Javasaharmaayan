@@ -1,13 +1,15 @@
 package com.myorg.javacourse.model;
+import org.algo.model.PortfolioInterface;
+import org.algo.model.StockInterface;
 
-import com.myorg.javacourse.service.PortfolioManager;
+import com.myorg.javacourse.*;
 
 @SuppressWarnings("unused")
-public class Portfolio {
-private String title; 
+public class Portfolio implements PortfolioInterface {
+private String title;
+private StockInterface[] stocks;
 private final static int MAX_PORTFOLIO_SIZE=5;
-private Stock[] stocks; 
-private int index=0;
+ private int index=0;
 private float balance;
 public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 
@@ -29,6 +31,15 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 		for(int i=0 ; i < p.index ; i++)
 		{
 			 this.addStock(new Stock(p.getStock()[i]));
+		}
+	}
+	public Portfolio() {
+		this.stocks=new Stock[MAX_PORTFOLIO_SIZE];
+	}
+	public Portfolio(Stock[] stockArray) {
+		this();
+		for (int i = 0; i < MAX_PORTFOLIO_SIZE; i++){
+			this.stocks[i] = stockArray[i];	
 		}
 	}
 	/**
@@ -88,7 +99,7 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 				}
 			}
 			this.stocks[index] = s;
-			this.stocks[index].setStockQuantity(0);
+			((Stock) this.stocks[index]).setStockQuantity(0);
 			this.index++;
 		}
 		else
@@ -121,7 +132,7 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 				{
 					if(quantity==-1)
 					{
-						updateBalance(stocks[i].getStockQuantity() * stocks[i].getBid());
+						updateBalance(((Stock) stocks[i]).getStockQuantity() * stocks[i].getBid());
 						getStock()[i].setStockQuantity(0);
 						return true;
 					}
@@ -197,7 +208,7 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 	
 	
 	public Stock[] getStock(){
-		return stocks;
+		return (Stock[]) stocks;
 	}
 	
 	public void setTitle(String title){
@@ -217,5 +228,23 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 		}
 		portfolioValue = getTotalValue() + "$ Total Stocks value:" + this.getStockValue() + "$ Balance:" + getBalance() + "$";
 		return (portfolioTitle + "<br><br>" + "Total Portfolio Value:" + portfolioValue + "<br><br>" + details);
+	}
+	public static int getMaxSize(){
+		return MAX_PORTFOLIO_SIZE;
+	}
+	public StockInterface findStock(String symbol) {
+		for(int i=0; i< getIndex(); i++)
+		{
+			if(symbol.equals(getStock()[i].getSymbol()));
+			{
+				return (StockInterface) getStock()[i];
+			}
+		}
+		return null;
+	}
+	@Override
+	public StockInterface[] getStocks() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
