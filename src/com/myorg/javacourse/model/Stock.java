@@ -34,9 +34,14 @@ public class Stock implements StockInterface {
 		this.stockQuantity= s.getStockQuantity();
 	}
 	public Stock() {
+		symbol=null;
+		ask=0;
+		bid=0;
+		date=null;
+		stockQuantity=0;
 	}
 	
-	SimpleDateFormat sdf= new SimpleDateFormat("MM/dd/yyyy");
+	
 	
 	public String getSymbol() {
 		return symbol;
@@ -71,6 +76,7 @@ public class Stock implements StockInterface {
 	}
 
 	public String getHtmlDescription() {
+		SimpleDateFormat sdf= new SimpleDateFormat("MM/dd/yyyy");
 		String stockHtmlDetailsString =  "<b> Stock symbol: </b> " + getSymbol()+ "  <b>Ask:</b> " + getAsk() + "<b>Bid:</b>" +getBid() + " <b>date</b>:  " + sdf.format(getDate())+ "<br>";
 		return stockHtmlDetailsString;
 

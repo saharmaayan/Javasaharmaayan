@@ -13,10 +13,10 @@ private final static int MAX_PORTFOLIO_SIZE=5;
 private float balance;
 public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 
-	public Portfolio(String title){
+	/*public Portfolio(String title){
 		stocks= new Stock [MAX_PORTFOLIO_SIZE];
 		this.title=title;
-    }
+    }*/
 	/**
 	 * this method removes the first stock in the portfolio
 	 * the method checks if the portfolio is not empty, then the method removes the first stock by
@@ -27,10 +27,10 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 	
 	public Portfolio(Portfolio p)
 	{
-		this(p.getTitle());
+		this();//this(p.getTitle());
 		for(int i=0 ; i < p.index ; i++)
 		{
-			 this.addStock(new Stock(p.getStock()[i]));
+			 this.addStock(new Stock(p.getStocks()[i]));
 		}
 	}
 	public Portfolio() {
@@ -38,9 +38,10 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 	}
 	public Portfolio(Stock[] stockArray) {
 		this();
-		for (int i = 0; i < MAX_PORTFOLIO_SIZE; i++){
+		for (int i = 0; i < stockArray.length; i++){
 			this.stocks[i] = stockArray[i];	
 		}
+		index= stockArray.length;
 	}
 	/**
 	 * this method change the bid's value of the last stock in the portfolio.
@@ -74,7 +75,7 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 		float amount = 0; 
 		for(int i=0; i<getIndex(); i++)
 		{
-			amount+=getStock()[i].getBid()*getStock()[i].getStockQuantity();
+			amount+=getStocks()[i].getBid()*getStocks()[i].getStockQuantity();
 		}
 		return amount;
 	}
@@ -99,7 +100,7 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 				}
 			}
 			this.stocks[index] = s;
-			((Stock) this.stocks[index]).setStockQuantity(0);
+			((Stock) stocks[index]).setStockQuantity(0);
 			this.index++;
 		}
 		else
@@ -110,12 +111,12 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 		boolean flag=false;
 		for(int i=0; i<index; i++)
 		{
-			if(getStock()[i].getSymbol().equals(symbol.getSymbol()))
+			if(getStocks()[i].getSymbol().equals(symbol.getSymbol()))
 			{
 				flag= sellStock(symbol.getSymbol(), -1);
 				for(int j=i; j<index; j++)
 				{
-					getStock()[j]=getStock()[j+1];
+					getStocks()[j]=getStocks()[j+1];
 				
 				}
 				index--;
@@ -128,12 +129,12 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 		
 		for(int i=0; i < index; i++)
 			{
-				if(symbol.equals(getStock()[i].getSymbol()))
+				if(symbol.equals(getStocks()[i].getSymbol()))
 				{
 					if(quantity==-1)
 					{
 						updateBalance(((Stock) stocks[i]).getStockQuantity() * stocks[i].getBid());
-						getStock()[i].setStockQuantity(0);
+						getStocks()[i].setStockQuantity(0);
 						return true;
 					}
 					else if(quantity<=0 &&  quantity!= -1)
@@ -141,14 +142,14 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 						System.out.println("Sorry, but you cant sell");
 						return false;
 					}
-					else if(getStock()[i].getStockQuantity() >= quantity)
+					else if(getStocks()[i].getStockQuantity() >= quantity)
 					{
-						updateBalance(getStock()[i].getStockQuantity() * getStock()[i].getBid());
-						getStock()[i].setStockQuantity(getStock()[i].getStockQuantity() - quantity);
+						updateBalance(getStocks()[i].getStockQuantity() * getStocks()[i].getBid());
+						getStocks()[i].setStockQuantity(getStocks()[i].getStockQuantity() - quantity);
 						return true;
 
 					}
-					else if(getStock()[i].getStockQuantity() < quantity)
+					else if(getStocks()[i].getStockQuantity() < quantity)
 					{
 						System.out.println("Not enough stocks to sell");
 						return false;
@@ -176,75 +177,66 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 		
 			for(int i=0; i<index; i++)
 			{
-					if(getStock()[i].getSymbol().equals(stock.getSymbol()))
+					if(getStocks()[i].getSymbol().equals(stock.getSymbol()))
 					{
 						if(quantity== -1)
 						{
-							getStock()[i].setStockQuantity(getStock()[i].getStockQuantity()+max);
+							getStocks()[i].setStockQuantity(getStocks()[i].getStockQuantity()+max);
 							updateBalance(-(max*stock.getAsk()));
 							return true;
 						}
 						else
 						{
-							getStock()[i].setStockQuantity(getStock()[i].getStockQuantity()+quantity);
+							stock.setStockQuantity(getStocks()[i].getStockQuantity()+quantity);
 							updateBalance(-(quantity*stock.getAsk()));
 							return true;
 						}
 					}
 			}
-			addStock(stock);
+			this.addStock(stock);
 			if(quantity==-1){
-				getStock()[index-1].setStockQuantity(max);
-				updateBalance(-(max*stock.getAsk()));
+				this.getStocks()[index-1].setStockQuantity(max);
+				this.updateBalance(-(max*stock.getAsk()));
 				return true;
 			}
 			else{
-				getStock()[index-1].setStockQuantity(quantity);
-				updateBalance(-(quantity*stock.getAsk()));
+				getStocks()[index-1].setStockQuantity(quantity);
+				this.updateBalance(-(quantity*stock.getAsk()));
 				return true;
 			}
 		}
 	}
-	
-	
-	public Stock[] getStock(){
+	public Stock[] getStocks(){
 		return (Stock[]) stocks;
 	}
-	
 	public void setTitle(String title){
 		this.title= title;
 	}
 	public String getTitle(){
 		return title;
 	}
-	
 	public String getHtmlString(){
 		String portfolioTitle = "<h1>"  + getTitle() + "</h1>";
 		String details = "";
 		String portfolioValue;
 		for(int i = 0; i < index; i++)
 		{
-			details = details +"<br>"+getStock()[i].getHtmlDescription();
+			details = details +"<br>"+getStocks()[i].getHtmlDescription();
 		}
 		portfolioValue = getTotalValue() + "$ Total Stocks value:" + this.getStockValue() + "$ Balance:" + getBalance() + "$";
 		return (portfolioTitle + "<br><br>" + "Total Portfolio Value:" + portfolioValue + "<br><br>" + details);
 	}
-	public static int getMaxSize(){
+	public static int getMaxPortfolioSize() {
 		return MAX_PORTFOLIO_SIZE;
 	}
 	public StockInterface findStock(String symbol) {
 		for(int i=0; i< getIndex(); i++)
 		{
-			if(symbol.equals(getStock()[i].getSymbol()));
+			if(symbol.equals(getStocks()[i].getSymbol()));
 			{
-				return (StockInterface) getStock()[i];
+				return getStocks()[i];
 			}
 		}
-		return null;
-	}
-	@Override
-	public StockInterface[] getStocks() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

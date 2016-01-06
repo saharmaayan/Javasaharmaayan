@@ -32,7 +32,7 @@ public class PortfolioManager implements PortfolioManagerInterface {
 
 	public PortfolioInterface getPortfolio() {
 		PortfolioDto portfolioDto = datastoreService.getPortfolilo();
-		return (PortfolioInterface) fromDto(portfolioDto);
+		return fromDto(portfolioDto);
 	}
 
 	/**
@@ -41,12 +41,12 @@ public class PortfolioManager implements PortfolioManagerInterface {
 	@Override
 	public void update() {
 		StockInterface[] stocks = getPortfolio().getStocks();
-		List<String> symbols = new ArrayList<>(Portfolio.getMaxSize());
+		List<String> symbols = new ArrayList<>(Portfolio.getMaxPortfolioSize());
 		for (StockInterface si : stocks) {
 			symbols.add(si.getSymbol());
 		}
 
-		List<Stock> update = new ArrayList<>(Portfolio.getMaxSize());
+		List<Stock> update = new ArrayList<>(Portfolio.getMaxPortfolioSize());
 		List<Stock> currentStocksList = new ArrayList<Stock>();
 		try {
 			List<StockDto> stocksList = MarketService.getInstance().getStocks(symbols);
@@ -76,7 +76,7 @@ public class PortfolioManager implements PortfolioManagerInterface {
 		Map<Date, Float> map = new HashMap<>();
 
 		//get stock status from db.
-		StockInterface[] stocks = (StockInterface[]) portfolio.getStock();
+		StockInterface[] stocks = (StockInterface[]) portfolio.getStocks();
 		for (int i = 0; i < stocks.length; i++) {
 			StockInterface stock = stocks[i];
 
@@ -198,7 +198,7 @@ public class PortfolioManager implements PortfolioManagerInterface {
 	 */
 	private PortfolioDto toDto(Portfolio portfolio) {
 		StockDto[] array = null;
-		StockInterface[] stocks = portfolio.getStock();
+		StockInterface[] stocks = portfolio.getStocks();
 		if(stocks != null) {
 			array = new StockDto[stocks.length];
 			for (int i = 0; i < stocks.length; i++) {
@@ -271,10 +271,16 @@ public class PortfolioManager implements PortfolioManagerInterface {
 
 	@Override
 	public void buyStock(String symbol, int quantity) throws PortfolioException {
-		/**Portfolio portfolio = (Portfolio) getPortfolio();
-		portfolio.buyStock(stock, quantity);
-		flush(portfolio);*/
+		Portfolio portfolio = (Portfolio) getPortfolio();
+		for(int i=0; i<portfolio.getIndex();i++)
+		{
+			if(portfolio.getStocks()[i].getSymbol().equals(symbol))
+			{
+				portfolio.buyStock(portfolio.getStocks()[i], quantity);
+			}
+		}
 		
+		flush(portfolio);
 	}
 
 	@Override
@@ -290,8 +296,8 @@ public class PortfolioManager implements PortfolioManagerInterface {
 		Portfolio portfolio = (Portfolio) getPortfolio();
 		for(int i=0; i<portfolio.getIndex();i++)
 		{
-			if(symbol.equals(portfolio.getStock()[i].getSymbol())){
-				portfolio.removeStock(portfolio.getStock()[i]);
+			if(symbol.equals(portfolio.getStocks()[i].getSymbol())){
+				portfolio.removeStock(portfolio.getStocks()[i]);
 			}
 		}
 		flush(portfolio);
