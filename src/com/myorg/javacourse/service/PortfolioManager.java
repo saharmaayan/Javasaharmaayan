@@ -304,19 +304,12 @@ public class PortfolioManager implements PortfolioManagerInterface {
 	@Override
 	public void removeStock(String symbol) throws PortfolioException {
 		Portfolio portfolio = (Portfolio) getPortfolio();
-		for(int i=0; i<portfolio.getIndex();i++)
-		{
-			if(symbol.equals(portfolio.getStocks()[i].getSymbol())){
-				
-				try {
-					portfolio.removeStock(portfolio.getStocks()[i]);
-				} catch (StockNotExistException e) {
-				throw new PortfolioException(e.getMessage());
-				} catch (Exception e) {
-					throw new PortfolioException(e.getMessage());
-				}
-				
-			}
+		try {
+			portfolio.removeStock(symbol);
+		} catch (StockNotExistException e) {
+			throw new PortfolioException("Stock Not Exist");
+		} catch (Exception e) {
+			throw new PortfolioException(e.getMessage());
 		}
 		flush(portfolio);
 	}

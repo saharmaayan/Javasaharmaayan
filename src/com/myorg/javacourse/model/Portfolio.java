@@ -107,19 +107,19 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 			throw new StockNotExistException("The stock is noe exist!!");
 		}
     }
-	public void removeStock(Stock symbol) throws StockNotExistException, Exception
+	
+	public void removeStock(String symbol) throws StockNotExistException, Exception
 	{
-		
-		for(int i=0; i<index; i++)
+		for(int i=0; i<getIndex(); i++)
 		{
-			if(getStocks()[i].getSymbol().equals(symbol.getSymbol()))
+			if(stocks[i].getSymbol().equals(symbol))
 			{
-				 sellStock(symbol.getSymbol(), -1);
-				for(int j=i; j<index; j++)
+				this.sellStock(stocks[i].getSymbol(), -1);
+				for(int j=i; j<getIndex(); j++)
 				{
-					getStocks()[j]=getStocks()[j+1];
+					stocks[j]=stocks[j+1];
 				}
-				index--;
+				this.index--;
 				return;
 			}
 		}
@@ -127,7 +127,6 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 	}
 	public void sellStock(String symbol,int quantity) throws Exception
 	{
-		
 		for(int i=0; i < index; i++)
 			{
 				if(symbol.equals(getStocks()[i].getSymbol()))
@@ -136,7 +135,6 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 					{
 						updateBalance(((Stock) stocks[i]).getStockQuantity() * stocks[i].getBid());
 						getStocks()[i].setStockQuantity(0);
-						return;
 					}
 					else if(quantity<=0 &&  quantity!= -1)
 					{
@@ -146,8 +144,6 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 					{
 						updateBalance(getStocks()[i].getStockQuantity() * getStocks()[i].getBid());
 						getStocks()[i].setStockQuantity(getStocks()[i].getStockQuantity() - quantity);
-						return;
-
 					}
 					else if(getStocks()[i].getStockQuantity() < quantity)
 					{
