@@ -1,9 +1,11 @@
 package com.myorg.javacourse.model;
 import org.algo.model.PortfolioInterface;
 import org.algo.model.StockInterface;
-
 import com.myorg.javacourse.*;
-
+import com.myorg.javacourse.exception.BalanceException;
+import com.myorg.javacourse.exception.PortfolioFullException;
+import com.myorg.javacourse.exception.StockAlreadyExistsException;
+import com.myorg.javacourse.exception.StockNotExistException;
 @SuppressWarnings("unused")
 public class Portfolio implements PortfolioInterface {
 private String title;
@@ -24,15 +26,6 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 	 * if the portfolio is empty, the method does nothing
 	 * @param p
 	 */
-	
-	public Portfolio(Portfolio p)
-	{
-		this();//this(p.getTitle());
-		for(int i=0 ; i < p.index ; i++)
-		{
-			 this.addStock(new Stock(p.getStocks()[i]));
-		}
-	}
 	public Portfolio() {
 		this.stocks=new Stock[MAX_PORTFOLIO_SIZE];
 	}
@@ -50,18 +43,17 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 	 * @param p
 	 */
 	
-	public void updateBalance(float amount)
+	public void updateBalance(float amount) throws BalanceException
 	{
 		if(amount+balance<0)
 		{
-			return;
+			throw new BalanceException("The balance can not be negative!");
 		}
 		else
 		{
 			balance+=amount;
 		}
 	}
-	
 	public float getBalance()
 	{
 		return balance;
@@ -88,43 +80,52 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 	 * the method check if there is space in the portfolio to add another stock,
 	 * then it adds the stock to the end of the portfollio and increase the portfolio size by 1
 	 * @param p
+	 * @throws StockAlreadyExistsException 
+	 * @throws PortfolioFullException 
+	 * @throws StockNotExistException 
 	 */
 	
-	public void addStock(Stock s){
+	public void addStock(Stock s) throws StockAlreadyExistsException, PortfolioFullException, StockNotExistException{
 		if (this.index < MAX_PORTFOLIO_SIZE)
 		{
 			for (int i = 0 ; i < this.index; i++)
 			{
-				if(s.getSymbol() == this.stocks[i].getSymbol()){
-					return;
+				if(s.getSymbol().equals(this.stocks[i].getSymbol())){
+					throw new StockAlreadyExistsException("The stock is already exist");
 				}
 			}
 			this.stocks[index] = s;
 			((Stock) stocks[index]).setStockQuantity(0);
 			this.index++;
 		}
+		else if(this.index>= MAX_PORTFOLIO_SIZE)
+		{
+			throw new PortfolioFullException("The protfolio is full!!");
+		}
 		else
-			System.out.println("Can’t add new stock, portfolio can have only" + MAX_PORTFOLIO_SIZE + "stocks");
+		{
+			throw new StockNotExistException("The stock is noe exist!!");
+		}
     }
-	public boolean removeStock(Stock symbol)
+	public void removeStock(Stock symbol) throws StockNotExistException, Exception
 	{
-		boolean flag=false;
+		
 		for(int i=0; i<index; i++)
 		{
 			if(getStocks()[i].getSymbol().equals(symbol.getSymbol()))
 			{
-				flag= sellStock(symbol.getSymbol(), -1);
+				 sellStock(symbol.getSymbol(), -1);
 				for(int j=i; j<index; j++)
 				{
 					getStocks()[j]=getStocks()[j+1];
-				
 				}
 				index--;
+				return;
 			}
 		}
-		return flag;
+		throw new StockNotExistException("The stock is not exist");
 	}
-	public boolean sellStock(String symbol,int quantity)
+	public void sellStock(String symbol,int quantity) throws Exception
 	{
 		
 		for(int i=0; i < index; i++)
@@ -135,46 +136,39 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 					{
 						updateBalance(((Stock) stocks[i]).getStockQuantity() * stocks[i].getBid());
 						getStocks()[i].setStockQuantity(0);
-						return true;
+						return;
 					}
 					else if(quantity<=0 &&  quantity!= -1)
 					{
-						System.out.println("Sorry, but you cant sell");
-						return false;
+						throw new Exception("the quantity cant be negative");
 					}
 					else if(getStocks()[i].getStockQuantity() >= quantity)
 					{
 						updateBalance(getStocks()[i].getStockQuantity() * getStocks()[i].getBid());
 						getStocks()[i].setStockQuantity(getStocks()[i].getStockQuantity() - quantity);
-						return true;
+						return;
 
 					}
 					else if(getStocks()[i].getStockQuantity() < quantity)
 					{
-						System.out.println("Not enough stocks to sell");
-						return false;
+						throw new Exception("Not enough stocks to sell");
 					}
 				}
 			}
-		System.out.println("error!!!");
-		return false;
-			
+		
 	}
-	public boolean buyStock(Stock stock,int quantity)
+	public void buyStock(Stock stock,int quantity) throws BalanceException, Exception
 	{
 		int max=0;
 		if(quantity<=0 && quantity!= -1)
 		{
-			System.out.println("sorry the quantity is worng!");
-			return false;
+			throw new Exception("sorry the quantity is worng!");
 		}
 		else{
 			max=(int)(balance/stock.getAsk());
 			if(quantity>max){
-				System.out.println("the balance is not enough");
-				return false;
+				throw new BalanceException("the balance is not enough");
 			}
-		
 			for(int i=0; i<index; i++)
 			{
 					if(getStocks()[i].getSymbol().equals(stock.getSymbol()))
@@ -183,13 +177,13 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 						{
 							getStocks()[i].setStockQuantity(getStocks()[i].getStockQuantity()+max);
 							updateBalance(-(max*stock.getAsk()));
-							return true;
+							return;
 						}
 						else
 						{
 							stock.setStockQuantity(getStocks()[i].getStockQuantity()+quantity);
 							updateBalance(-(quantity*stock.getAsk()));
-							return true;
+							return;
 						}
 					}
 			}
@@ -197,12 +191,12 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 			if(quantity==-1){
 				this.getStocks()[index-1].setStockQuantity(max);
 				this.updateBalance(-(max*stock.getAsk()));
-				return true;
+				return ;
 			}
 			else{
 				getStocks()[index-1].setStockQuantity(quantity);
 				this.updateBalance(-(quantity*stock.getAsk()));
-				return true;
+				return;
 			}
 		}
 	}

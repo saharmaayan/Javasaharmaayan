@@ -40,9 +40,6 @@ public class Stock implements StockInterface {
 		date=null;
 		stockQuantity=0;
 	}
-	
-	
-	
 	public String getSymbol() {
 		return symbol;
 	}
@@ -87,10 +84,7 @@ public class Stock implements StockInterface {
 	}
 	public ALGO_RECOMMENDATION getRecommendation() {
 		return recommendation ;
-		
 	}
-	
-	
 }
 
 
