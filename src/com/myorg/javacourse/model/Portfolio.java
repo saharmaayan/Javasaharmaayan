@@ -86,6 +86,8 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 	 */
 	
 	public void addStock(Stock s) throws StockAlreadyExistsException, PortfolioFullException, StockNotExistException{
+		if (s.getAsk()==0)
+			throw new StockNotExistException("The stock is not exist!!");
 		if (this.index < MAX_PORTFOLIO_SIZE)
 		{
 			for (int i = 0 ; i < this.index; i++)
@@ -102,10 +104,6 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 		{
 			throw new PortfolioFullException("The protfolio is full!!");
 		}
-		else
-		{
-			throw new StockNotExistException("The stock is noe exist!!");
-		}
     }
 	
 	public void removeStock(String symbol) throws StockNotExistException, Exception
@@ -115,10 +113,11 @@ public enum ALGO_RECOMMENDATION{BUY, SELL, REMOVE, HOLD};
 			if(stocks[i].getSymbol().equals(symbol))
 			{
 				this.sellStock(stocks[i].getSymbol(), -1);
-				for(int j=i; j<getIndex(); j++)
+				for(int j=i; j<getIndex()-1; j++)
 				{
 					stocks[j]=stocks[j+1];
 				}
+				stocks[getIndex()-1]=null;
 				this.index--;
 				return;
 			}
